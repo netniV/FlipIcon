@@ -23,10 +23,10 @@ namespace FlipIcon.Handler
 
         #region Private Fields
 
-        private static DoubleAnimation slideInAnimation;
-        private static Storyboard slideInStoryboard;
-        private static DoubleAnimation slideOutAnimation;
-        private static Storyboard slideOutStoryboard;
+        private static readonly DoubleAnimation slideInAnimation;
+        private static readonly Storyboard slideInStoryboard;
+        private static readonly DoubleAnimation slideOutAnimation;
+        private static readonly Storyboard slideOutStoryboard;
 
         #endregion Private Fields
 
@@ -80,7 +80,6 @@ namespace FlipIcon.Handler
         {
             window.Height = SystemParameters.WorkArea.Height;
             object layoutObject = window.FindName("LayoutRoot");
-            FrameworkElement layoutRoot = layoutObject as FrameworkElement;
 
             if (visibility == Visibility.Visible)
             {
@@ -92,7 +91,7 @@ namespace FlipIcon.Handler
 
             storyboard.Completed += Storyboard_Completed;
 
-            if (layoutRoot != null)
+            if (layoutObject is FrameworkElement layoutRoot)
             {
                 layoutRoot.Width = animation.From.Value;
                 Storyboard.SetTarget(storyboard, layoutRoot);

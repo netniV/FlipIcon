@@ -37,15 +37,13 @@ namespace FlipIcon.Handler
         /// <param name="handler">Event handler to be added</param>
         internal static void AddHandler(DependencyObject element, RoutedEvent routedEvent, Delegate handler)
         {
-            UIElement uie = element as UIElement;
-            if (uie != null)
+            if (element is UIElement uie)
             {
                 uie.AddHandler(routedEvent, handler);
             }
             else
             {
-                ContentElement ce = element as ContentElement;
-                if (ce != null)
+                if (element is ContentElement ce)
                 {
                     ce.AddHandler(routedEvent, handler);
                 }
@@ -61,15 +59,13 @@ namespace FlipIcon.Handler
         /// <param name="handler">Event handler to be removed</param>
         internal static void RemoveHandler(DependencyObject element, RoutedEvent routedEvent, Delegate handler)
         {
-            UIElement uie = element as UIElement;
-            if (uie != null)
+            if (element is UIElement uie)
             {
                 uie.RemoveHandler(routedEvent, handler);
             }
             else
             {
-                ContentElement ce = element as ContentElement;
-                if (ce != null)
+                if (element is ContentElement ce)
                 {
                     ce.RemoveHandler(routedEvent, handler);
                 }

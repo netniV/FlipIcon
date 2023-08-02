@@ -133,7 +133,7 @@ namespace FlipIcon.Handler
         }
 
         private static string mAssemblyTitle;
-        private static object mAssemblyTitleLock = new object();
+        private static readonly object mAssemblyTitleLock = new object();
         /// <summary>
         /// Gets (and caches) the assembly emtry title.
         /// </summary>
@@ -162,7 +162,7 @@ namespace FlipIcon.Handler
         }
 
         private static string mAssemblyDescription;
-        private static object mAssemblyDescriptionLock = new object();
+        private static readonly object mAssemblyDescriptionLock = new object();
         /// <summary>
         /// Gets (and caches) the assembly description.
         /// </summary>
@@ -185,7 +185,7 @@ namespace FlipIcon.Handler
         }
 
         private static string mAssemblyProduct;
-        private static object mAssemblyProductLock = new object();
+        private static readonly object mAssemblyProductLock = new object();
         /// <summary>
         /// Gets (and caches) the assembly product.
         /// </summary>
@@ -227,7 +227,7 @@ namespace FlipIcon.Handler
         }
 
         private static string mAssemblyCompany;
-        private static object mAssemblyCompanyLock = new object();
+        private static readonly object mAssemblyCompanyLock = new object();
         /// <summary>
         /// Gets (and caches) the assembly company.
         /// </summary>
@@ -251,7 +251,7 @@ namespace FlipIcon.Handler
         }
 
         private static string mAssemblyVersion;
-        private static object mAssemblyVersionLock = new object();
+        private static readonly object mAssemblyVersionLock = new object();
         /// <summary>
         /// Gets (and caches) the assembly version.
         /// </summary>
@@ -272,7 +272,7 @@ namespace FlipIcon.Handler
         }
 
         private static Assembly mAssemblyEntry;
-        private static object mAssemblyEntryLock = new object();
+        private static readonly object mAssemblyEntryLock = new object();
 
         /// <summary>
         /// Gets (and caches) the entry assembly.
@@ -367,7 +367,7 @@ namespace FlipIcon.Handler
                 if (throwErrors)
                     throw;
 
-                return default(T);
+                return default;
             }
         }
 
@@ -379,8 +379,7 @@ namespace FlipIcon.Handler
         /// <returns></returns>
         public static string ConvertBytesToString(byte[] message)
         {
-            Exception ex = null;
-            return ConvertBytesToString(message, out ex);
+            return ConvertBytesToString(message, out _);
         }
 
         /// <summary>
@@ -405,7 +404,7 @@ namespace FlipIcon.Handler
         }
 
         private static SynchronizationContext mContext = SynchronizationContext.Current;
-        private static object mContextLock = new object();
+        private static readonly object mContextLock = new object();
 
         internal static void SetSynchronizationContext(SynchronizationContext context)
         {
@@ -485,7 +484,6 @@ namespace FlipIcon.Handler
         {
             if (!System.Diagnostics.Debugger.IsAttached && (IsDebuggerInstalled || forceWait))
             {
-                ConsoleKeyInfo cki = new ConsoleKeyInfo();
                 Console.WriteLine();
                 DateTime endTime = DateTime.Now.AddSeconds(timeOut);
 
@@ -499,7 +497,7 @@ namespace FlipIcon.Handler
 
                 if (Console.KeyAvailable)
                 {
-                    cki = Console.ReadKey(true);
+                    ConsoleKeyInfo cki = Console.ReadKey(true);
                     if (cki.KeyChar == 'D' || cki.KeyChar == 'd')
                         System.Diagnostics.Debugger.Launch();
                 }
@@ -579,8 +577,7 @@ namespace FlipIcon.Handler
                 if (sb.Length > 0)
                     sb.AppendLine(Environment.NewLine);
 
-                COMException comEx = exception as COMException;
-                if (comEx != null)
+                if (exception is COMException comEx)
                     sb.AppendFormat("#{3} - {0}: Error {4} (0x{4:X8}) - {1}\r\nStack: {2}", exception.GetType().FullName, exception.Message, exception.StackTrace, errorCount, comEx.ErrorCode);
                 else
                     sb.AppendFormat("#{3} - {0}: {1}\r\nStack: {2}", exception.GetType().FullName, exception.Message, exception.StackTrace, errorCount);
@@ -591,8 +588,8 @@ namespace FlipIcon.Handler
         }
 
 
-        static DateTime start = GetDateAndWatch();
-        static Stopwatch watch;
+        static readonly DateTime start = GetDateAndWatch();
+        private static Stopwatch watch;
 
         private static DateTime GetDateAndWatch()
         {

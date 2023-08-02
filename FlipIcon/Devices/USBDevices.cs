@@ -7,7 +7,7 @@ namespace FlipIcon.Devices
 {
     class USBDevices : List<USBDeviceInfo>
     {
-        public USBDevices() : this(USBDevices.Get())
+        public USBDevices() : this(Get())
         {
 
         }

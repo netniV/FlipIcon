@@ -37,26 +37,37 @@ namespace FlipIcon.Devices
             {
                 if (mFlipHScroll == null)
                 {
-                    // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
-                    using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey))
-                    {
-                        var rv = rk.GetValue("FlipFlopHScroll", 0);
-                        var ri = rv as int?;
-                        mFlipHScroll = ri.GetValueOrDefault() != 0;
-                    }
+                    mFlipHScroll = ReadRegValue(isHorizontal: true);
                 }
+
                 return mFlipHScroll.GetValueOrDefault();
             }
+
             set
             {
                 if (value != mFlipHScroll.GetValueOrDefault())
                 {
-                    // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
-                    using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey))
+                    if (value != ReadRegValue(isHorizontal: true))
                     {
-                        rk.SetValue("FlipFlopHScroll", value ? 1 : 0);
+                        // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
+                        using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey))
+                        {
+                            if (rk != null)
+                            {
+                                rk.SetValue("FlipFlopHScroll", value ? 1 : 0);
+                            }
+                        }
+
+                        value = ReadRegValue(isHorizontal: true);
                     }
+
                     mFlipHScroll = value;
+
+                    if (USBDevices.UpdateSystem)
+                    {
+                        Enable(false);
+                        Enable(true);
+                    }
                 }
             }
         }
@@ -68,25 +79,30 @@ namespace FlipIcon.Devices
             {
                 if (mFlipVScroll == null)
                 {
-                    // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
-                    using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey))
-                    {
-                        var rv = rk.GetValue("FlipFlopWheel", 0);
-                        var ri = rv as int?;
-                        mFlipVScroll = ri.GetValueOrDefault() != 0;
-                    }
+                    mFlipVScroll = ReadRegValue(isHorizontal: false);
                 }
+
                 return mFlipVScroll.GetValueOrDefault();
             }
+
             set
             {
                 if (value != mFlipVScroll.GetValueOrDefault())
                 {
-                    // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
-                    using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey, true))
+                    if (value != ReadRegValue(isHorizontal: false))
                     {
-                        rk.SetValue("FlipFlopWheel", value ? 1 : 0);
+                        // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
+                        using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey, true))
+                        {
+                            if (rk != null)
+                            {
+                                rk.SetValue("FlipFlopWheel", value ? 1 : 0);
+                            }
+                        }
+
+                        value = ReadRegValue(isHorizontal: false);
                     }
+
                     mFlipVScroll = value;
 
                     if (USBDevices.UpdateSystem)
@@ -95,6 +111,22 @@ namespace FlipIcon.Devices
                         Enable(true);
                     }
                 }
+            }
+        }
+
+        private bool ReadRegValue(bool isHorizontal)
+        {
+            // Computer\HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Enum\HID\VID_062A&PID_5918&MI_01&Col01\7&145be25b&0&0000\Device Parameters
+            using (RegistryKey rk = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Default).OpenSubKey(ParamKey))
+            {
+                if (rk != null)
+                {
+                    object rv = rk.GetValue(isHorizontal ? "FlipFlopHScroll" : "FlipFlopWheel", 0);
+                    int? ri = rv as int?;
+                    return ri.GetValueOrDefault() != 0;
+                }
+
+                return false;
             }
         }
 

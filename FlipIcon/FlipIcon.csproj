@@ -52,7 +52,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\Support\TrayIcon Disconnected.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\FlipIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -120,6 +120,7 @@
     <Compile Include="Devices\DeviceHelper.cs" />
     <Compile Include="Devices\USBDeviceInfo.cs" />
     <Compile Include="Devices\USBDevices.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Handler\AppBarHandler.cs" />
     <Compile Include="Handler\BalloonHelper.cs" />
     <Compile Include="Handler\NativeMethods.cs" />
@@ -232,22 +233,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Licenses.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="..\Support\TrayIcon Connected.png">
-      <Link>Resources\TrayIcon Connected.png</Link>
-    </Resource>
-    <Resource Include="..\Support\TrayIcon Disconnected.png">
-      <Link>Resources\TrayIcon Disconnected.png</Link>
-    </Resource>
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="..\Support\TrayIcon Connected.ico">
-      <Link>Resources\TrayIcon Connected.ico</Link>
-    </Resource>
-    <Resource Include="..\Support\TrayIcon Disconnected.ico">
-      <Link>Resources\TrayIcon Disconnected.ico</Link>
-    </Resource>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="..\Support\Close.png">

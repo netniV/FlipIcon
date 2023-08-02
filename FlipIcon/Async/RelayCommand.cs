@@ -21,17 +21,14 @@ namespace FlipIcon.Async
 
         public RelayCommand(Action<object> execute, Predicate<object> canExecute)
         {
-            if (execute == null)
-                throw new ArgumentNullException("execute");
-
-            _execute = execute;
+            _execute = execute ?? throw new ArgumentNullException("execute");
             _canExecute = canExecute;
         }
         #endregion // Constructors
 
         #region ICommand Members
 
-        public bool CanExecute(object parameter) => _canExecute == null ? true : _canExecute(parameter);
+        public bool CanExecute(object parameter) => _canExecute == null || _canExecute(parameter);
         public void Execute(object parameter) => _execute(parameter);
 
         public event EventHandler CanExecuteChanged

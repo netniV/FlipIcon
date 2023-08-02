@@ -300,8 +300,10 @@ ref int requiredSize);
             {
                 data.Add(did);
                 index += 1;
-                did = new DeviceInfoData();
-                did.Size = didSize;
+                did = new DeviceInfoData
+                {
+                    Size = didSize
+                };
             }
             return data.ToArray();
         }
@@ -312,16 +314,19 @@ ref int requiredSize);
             const int ERROR_INSUFFICIENT_BUFFER = 122;
             for (int index = 0; index <= diData.Length - 1; index++)
             {
-                StringBuilder sb = new StringBuilder(1);
-                int requiredSize = 0;
-                bool result = NativeMethods.SetupDiGetDeviceInstanceId(handle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out requiredSize);
+                StringBuilder sb = new StringBuilder(1);                
+                bool result = NativeMethods.SetupDiGetDeviceInstanceId(handle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out int requiredSize);
                 if (result == false && Marshal.GetLastWin32Error() == ERROR_INSUFFICIENT_BUFFER)
                 {
                     sb.Capacity = requiredSize;
-                    result = NativeMethods.SetupDiGetDeviceInstanceId(handle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out requiredSize);
+                    result = NativeMethods.SetupDiGetDeviceInstanceId(handle.DangerousGetHandle(), ref diData[index], sb, sb.Capacity, out _);
                 }
+
                 if (result == false)
+                {
                     throw new Win32Exception();
+                }
+
                 if (instanceId.Equals(sb.ToString()))
                 {
                     return index;
@@ -334,12 +339,15 @@ ref int requiredSize);
         // enable/disable...
         private static void EnableDevice(SafeDeviceInfoSetHandle handle, DeviceInfoData diData, bool enable)
         {
-            PropertyChangeParameters @params = new PropertyChangeParameters();
-            // The size is just the size of the header, but we've flattened the structure.
-            // The header comprises the first two fields, both integer.
-            @params.Size = 8;
-            @params.DiFunction = DiFunction.PropertyChange;
-            @params.Scope = Scopes.Global;
+            PropertyChangeParameters @params = new PropertyChangeParameters
+            {
+                // The size is just the size of the header, but we've flattened the structure.
+                // The header comprises the first two fields, both integer.
+                Size = 8,
+                DiFunction = DiFunction.PropertyChange,
+                Scope = Scopes.Global
+            };
+
             if (enable)
             {
                 @params.StateChange = StateChangeAction.Enable;

@@ -24,7 +24,7 @@ namespace FlipIcon.ViewModels
 
         public MainViewModel() : base()
         {
-            mIconSource = IconHandler.DisconnectedSource;
+            mIconSource = IconHandler.FlipSource;
 
             Dispatcher = Dispatcher.CurrentDispatcher;
 
@@ -286,7 +286,7 @@ namespace FlipIcon.ViewModels
                     OnPropertyChanging(nameof(IsWindows8Mode));
                     mIsWindows8Mode = value;
                     MenuActivationMode = GetMenuActivationModeFromWindows8Mode(value);
-                    UpdateWindowMode(value);
+                    UpdateWindowMode();
                     OnPropertyChanged(nameof(IsWindows8Mode));
                 }
             }
@@ -464,8 +464,10 @@ namespace FlipIcon.ViewModels
         {
             if (canAboutMenuCommand(obj))
             {
-                AboutWindow aw = new AboutWindow();
-                aw.DataContext = this;
+                AboutWindow aw = new AboutWindow
+                {
+                    DataContext = this
+                };
 
                 aw.ShowDialog();
             }
@@ -494,14 +496,16 @@ namespace FlipIcon.ViewModels
             if (canSetExtraMenuItemsVisiblityCommand(obj))
             {
                 Visibility newState = Visibility.Visible;
-                bool newBooleanValue = false;
-                if (bool.TryParse(obj.ToString(), out newBooleanValue))
-                    newState = (newBooleanValue) ? Visibility.Visible : Visibility.Collapsed;
-                else
+                if (bool.TryParse(obj.ToString(), out bool newBooleanValue))
                 {
-                    Visibility newVisibilityValue = Visibility.Collapsed;
-                    if (Enum.TryParse<Visibility>(obj.ToString(), out newVisibilityValue))
+                    newState = (newBooleanValue) ? Visibility.Visible : Visibility.Collapsed;
+                }
+                else
+                {                    
+                    if (Enum.TryParse<Visibility>(obj.ToString(), out Visibility newVisibilityValue))
+                    {
                         newState = newVisibilityValue;
+                    }
                 }
                 ExtraMenuItemsVisibility = newState;
                 AboutMenuItemEnabled = newState == Visibility.Visible;
@@ -616,11 +620,6 @@ namespace FlipIcon.ViewModels
             }
         }
 
-        private void ShowBalloon(string title, string detail)
-        {
-            ShowBalloon(title, detail, IconHandler.ConnectedSource);
-        }
-
         private void ShowBalloon(string title, string detail, ImageSource imageSource = null, BalloonIcon icon = BalloonIcon.Info, bool useCustom = false)
         {
             Dispatcher.BeginInvoke(new Action(() =>
@@ -652,11 +651,11 @@ namespace FlipIcon.ViewModels
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 IsWindows8Mode = IsWindows8;
-                IconSource = IconHandler.ConnectedSource;
+                IconSource = IconHandler.FlipSource;
             }));
         }
 
-        private void UpdateWindowMode(bool value)
+        private void UpdateWindowMode()
         {
             Window win = App.Current.MainWindow;
             win.SlideIn();

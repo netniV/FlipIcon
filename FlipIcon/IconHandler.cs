@@ -6,14 +6,12 @@ namespace FlipIcon
 {
     public static class IconHandler
     {
-        public static string DisconnectedFile => "TrayIcon Disconnected.ico";
-        public static BitmapSource DisconnectedSource => ImageFromResource(DisconnectedFile);
+        public static string FlipIcon => "FlipIcon.png";
 
         public static string CloseFile => "Close.png";
-        public static BitmapSource CloseSource => ImageFromResource(CloseFile);
 
-        public static string ConnectedFile => "TrayIcon Connected.ico";
-        public static BitmapSource ConnectedSource => ImageFromResource(ConnectedFile);
+        public static BitmapSource FlipSource => ImageFromResource(FlipIcon);
+        public static BitmapSource CloseSource => ImageFromResource(CloseFile);
 
         public static BitmapSource ImageFromResource(string fileName)
         {

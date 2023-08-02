@@ -62,8 +62,10 @@ namespace FlipIcon
             if (ex != null)
             {
                 //MessageBox.Show(ex.Message + Environment.NewLine + "Stack: " + ex.StackTrace, ex.Source);
-                ExceptionWindow ew = new ExceptionWindow();
-                ew.ExceptionObject = ex;
+                ExceptionWindow ew = new ExceptionWindow
+                {
+                    ExceptionObject = ex
+                };
                 ew.ShowDialog();
             }
         }
